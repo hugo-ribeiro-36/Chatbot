@@ -16,11 +16,13 @@ nltk.download('wordnet')
 
 stop_words = set(stopwords.words('english'))
 
-client = OpenAI(api_key="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")
+api_key = os.getenv("OPENAI_API_KEY")
+
+client = OpenAI(api_key=api_key)
 
 chroma_client = PersistentClient(path="./chromadb")
 
-embedding_fn = OpenAIEmbeddingFunction(api_key="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", model_name="text-embedding-3-small")
+embedding_fn = OpenAIEmbeddingFunction(api_key=api_key, model_name="text-embedding-3-small")
 
 collection = chroma_client.get_or_create_collection(name="knowledge", embedding_function=embedding_fn)
 
@@ -101,7 +103,7 @@ def search_knowledge_vector(query: str, top_k: int = 5) -> list[str]:
     
     if not results["documents"] or not results["documents"][0]:
         return []
-    
+        
     documents = results["documents"][0]
     embeddings = np.array(results["embeddings"][0])
     query_embed = collection._embedding_function(query)[0]

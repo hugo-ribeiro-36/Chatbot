@@ -6,9 +6,9 @@ from app.core.prompt_config import load_prompts
 from app.db.models import PromptConfig, Conversation, Message
 from app.db.database import db_session
 
+api_key = os.getenv("OPENAI_API_KEY")
 
-client = OpenAI(api_key = "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")
-
+client = OpenAI(api_key = api_key)
 
 conversation_memory = {}
 
@@ -114,7 +114,7 @@ async def get_web_response(convo_id: str, user_msg: str):
 
 
     messages.append({"role": "user", "content": user_msg})
-    #print(messages)
+    print(messages)
 
     try:
         response = client.responses.create(
