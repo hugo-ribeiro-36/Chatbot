@@ -78,8 +78,8 @@ def get_chatbot_version(convo_id: str):
     Returns:
         dict: A dictionary containing the version (e.g., {"version": "A"}).
     """
-    from app.core.chatbot_engine import get_or_assign_version
-    return {"version": get_or_assign_version(convo_id)}
+    from app.core.chatbot_engine import get_version
+    return {"version": get_version(convo_id)}
 
 @router.post("/upload")
 async def upload_file(conversation_id: str, file: UploadFile = File(...)):
