@@ -29,7 +29,6 @@ Designed to support version-based A/B testing, user feedback collection, configu
 | Feedback on responses              | ✅ Done    |
 | Feedback persistence               | ✅ Done    |
 | CRUD for knowledge entries         | ✅ Done    |
-| Dynamic prompt configuration       | ✅ Done    |
 | Vector-based knowledge search      | ✅ Done    |
 | Frontend UI                        | ✅ Done    |
 
