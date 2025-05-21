@@ -98,7 +98,10 @@ def search_knowledge_vector(query: str, top_k: int = 5) -> list[str]:
         n_results=top_k,
         include=["documents", "distances", "embeddings"]
     )
-
+    
+    if not results["documents"] or not results["documents"][0]:
+        return []
+    
     documents = results["documents"][0]
     embeddings = np.array(results["embeddings"][0])
     query_embed = collection._embedding_function(query)[0]
