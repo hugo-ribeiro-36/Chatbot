@@ -1,5 +1,5 @@
 
-# 💬 Data Flywheel Chatbot
+# 💬Chatbot
 
 A conversational web chatbot built with FastAPI (backend) and React (frontend), integrated with OpenAI's GPT and a semantic knowledge base powered by ChromaDB.
 
@@ -58,8 +58,8 @@ chatbot/
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/yourname/data-flywheel-chatbot.git
-cd data-flywheel-chatbot
+git clone
+cd chatbot
 ```
 
 ### 2. Backend setup
@@ -78,8 +78,8 @@ Visit http://localhost:8000/docs for Swagger UI.
 
 ☑️ Before running, ensure your OpenAI API key is configured:
 
-Option A: Hardcoded in app/core/knowledge_vector.py  
-Option B (recommended): use environment variable CHROMA_OPENAI_API_KEY or .env file
+Option A: Hardcoded in app/core/knowledge_vector.py  and app/core/chatbot_engine.py
+Option B (recommended): use environment variable OPENAI_API_KEY or .env file
 
 ### 3. Frontend setup
 
@@ -93,20 +93,6 @@ Frontend runs at http://localhost:3000
 
 ---
 
-## 📡 API Summary
-
-| Route                                | Method | Description                             |
-|-------------------------------------|--------|-----------------------------------------|
-| /api/v1/chatbot                     | POST   | Submit user message & get bot reply     |
-| /api/v1/feedback                    | POST   | Submit feedback for a bot reply         |
-| /api/v1/analytics/summary           | GET    | Feedback stats grouped by prompt version|
-| /api/v1/knowledge-vector/upload     | POST   | Upload a file to the vector store       |
-| /api/v1/knowledge-vector/list       | GET    | List stored knowledge chunks            |
-| /api/v1/config                      | GET    | Get current A/B system prompts          |
-| /api/v1/config                      | PUT    | Update system prompt for A or B         |
-
----
-
 ## 🧠 Design Rationale
 
 We made the following key design choices:
@@ -115,13 +101,11 @@ We made the following key design choices:
 
 - 🔀 A/B Testing: Prompt versions are assigned per conversation and persisted for consistent feedback comparisons.
 
-- 📚 Knowledge Search: We chose vector search (via ChromaDB) over static keywords to support semantically rich matching of uploaded text files.
+- 📚 Knowledge Search: Vector search (via ChromaDB) was chosen over static keywords to support semantically rich matching of uploaded text files.
 
-- ⚙️ Dynamic Configuration: Prompt logic (version A/B) is editable via JSON + API to allow non-dev users (or tools) to tune the assistant’s tone and behavior.
+- ⚙️ Dynamic Configuration: Prompt logic (version A/B) is editable via API to tune the assistant’s tone and behavior.
 
 - 📊 Feedback Logging: Ratings + comments are stored per message, linked to both the version and the user’s original message, enabling longitudinal analysis.
-
-- 📁 FastAPI + React: Clean decoupling of backend and frontend made local development fast and allowed hot reloading.
 
 ---
 
@@ -141,7 +125,4 @@ Try uploading:
 
 ## 📘 To Do / Future Work
 
-- [ ] Add React page for managing prompt config
-- [ ] Stream GPT responses token by token
-- [ ] Add Docker support and environment config
-- [ ] Automated tests (Pytest + coverage)
+- [ ] Adaptive Learning
