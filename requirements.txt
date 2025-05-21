@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+openai
+python-dotenv
+chromadb
+tiktoken
+nltk
+numpy
+
+#for testing
+httpx
+pytest
