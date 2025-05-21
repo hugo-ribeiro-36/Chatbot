@@ -15,7 +15,7 @@ Designed to support version-based A/B testing, user feedback collection, configu
 | Backend     | FastAPI                        |
 | LLM         | OpenAI (GPT-4o / GPT-3.5 Turbo)|
 | Knowledge   | ChromaDB + OpenAI Embeddings   |
-| Database    | SQLite (for feedback)          |
+| Database    | SQLite                         |
 | Vector Store| chromadb                       |
 
 ---
