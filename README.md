@@ -78,6 +78,7 @@ Visit http://localhost:8000/docs for Swagger UI.
 ☑️ Before running, ensure your OpenAI API key is configured:
 
 Option A: Hardcoded in app/core/knowledge_vector.py  and app/core/chatbot_engine.py
+
 Option B (recommended): use environment variable OPENAI_API_KEY or .env file
 
 ### 3. Frontend setup
@@ -105,20 +106,6 @@ We made the following key design choices:
 - ⚙️ Dynamic Configuration: Prompt logic (version A/B) is editable via API to tune the assistant’s tone and behavior.
 
 - 📊 Feedback Logging: Ratings + comments are stored per message, linked to both the version and the user’s original message, enabling longitudinal analysis.
-
----
-
-## 🧪 Test It
-
-Try asking:
-
-- "What is AquaShield-X?" → (if your knowledge base includes zenthos.txt)
-- "How long does shipping take?" → (tests fallback to prompt A/B)
-
-Try uploading:
-
-- A .txt file via POST /api/v1/knowledge-vector/upload
-- A thumbs up/down rating and optional comment via the frontend
 
 ---
 
