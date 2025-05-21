@@ -12,24 +12,9 @@ client = OpenAI(api_key = "sk-proj-1KI_uoPeXPPCkAu6Zs4PQS1x8rK3nsIZEIFs_eysiDC-_
 
 conversation_memory = {}
 
-def get_or_assign_version(convo):
-    """
-    Assigns a random version ('A' or 'B') to a conversation if it doesn't have one yet.
-
-    Args:
-        convo (Conversation): The conversation object from the database.
-
-    Returns:
-        str: The assigned or existing version of the conversation.
-    """
-    if not convo.version:
-        convo.version = random.choice(["A", "B"])
-        db_session.commit()
-    return convo.version
-
 async def get_streaming_response(convo_id: str, user_msg: str):
     """
-    Handles a streaming chat response, integrating knowledge base chunks when relevant.
+    Handles a streaming chat response using GPT-3.5, integrating knowledge base chunks when relevant.
 
     Args:
         convo_id (str): Unique identifier of the conversation.
@@ -40,12 +25,15 @@ async def get_streaming_response(convo_id: str, user_msg: str):
     """
     conv = db_session.query(Conversation).filter_by(id=convo_id).first()
 
-    version = get_or_assign_version(conv)
+    if not conv.version:
+        version = random.choice(["A", "B"])
+        conv.version = version
+        db_session.commit()
 
     db_session.add(Message(conversation_id=convo_id, role="user", content=user_msg))
     db_session.commit()
 
-    prompt_row = db_session.query(PromptConfig).filter_by(version=version).first()
+    prompt_row = db_session.query(PromptConfig).filter_by(version=conv.version).first()
     system_prompt = prompt_row.prompt if prompt_row else "You are a helpful assistant."
 
     messages = conversation_memory.get(convo_id, [])
@@ -98,7 +86,7 @@ async def get_streaming_response(convo_id: str, user_msg: str):
 
 async def get_web_response(convo_id: str, user_msg: str):
     """
-    Handles a streaming response with web search tool enabled.
+    Handles a streaming response using GPT-4.1 with web search tool enabled.
 
     Args:
         convo_id (str): Unique identifier of the conversation.
@@ -107,15 +95,17 @@ async def get_web_response(convo_id: str, user_msg: str):
     Yields:
         str: Streaming tokens with potential web-sourced context via SSE.
     """
-
     conv = db_session.query(Conversation).filter_by(id=convo_id).first()
 
-    version = get_or_assign_version(conv)
+    if not conv.version:
+        version = random.choice(["A", "B"])
+        conv.version = version
+        db_session.commit()
 
     db_session.add(Message(conversation_id=convo_id, role="user", content=user_msg))
     db_session.commit()
 
-    prompt_row = db_session.query(PromptConfig).filter_by(version=version).first()
+    prompt_row = db_session.query(PromptConfig).filter_by(version=conv.version).first()
     system_prompt = prompt_row.prompt if prompt_row else "You are a helpful assistant."
 
     messages = conversation_memory.get(convo_id, [])
@@ -174,6 +164,7 @@ def create_file_based_assistant(file_id: str) -> str:
     return assistant.id
 
 
+
 def upload_and_store_file(conversation_id: str, file_path: str) -> str:
     """
     Uploads a file to OpenAI's API and links it to the conversation in the database.
@@ -188,7 +179,7 @@ def upload_and_store_file(conversation_id: str, file_path: str) -> str:
     with open(file_path, "rb") as f:
         file = client.files.create(file=f, purpose="assistants")
 
-    #print(file)
+    print(file)
     convo = db_session.query(Conversation).filter_by(id=conversation_id).first()
     if convo:
         convo.file_id = file.id
@@ -206,12 +197,10 @@ async def get_response_with_file(conversation_id: str, user_message: str):
 
     Yields:
         str: Streaming tokens from the assistant's response via SSE.
-
-    Since this feature is still in beta, it might sometimes not recognize the file and not work.
     """
     convo = db_session.query(Conversation).filter_by(id=conversation_id).first()
     file_id = convo.file_id if convo else None
-    version = get_or_assign_version(convo)
+    version = get_version(conversation_id)
 
     assistant = client.beta.assistants.create(
         name="Knowledge Assistant",
@@ -244,6 +233,8 @@ async def get_response_with_file(conversation_id: str, user_message: str):
             break
 
 
+def get_version(convo_id: str) -> str:
+    return db_session.query(Conversation).filter_by(id=convo_id).first().version
 
 
 
